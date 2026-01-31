@@ -1,6 +1,6 @@
 import type { Request, Response } from 'express';
-import User from '../models/User.ts';
-import { logAction } from '../utils/logger.ts';
+import User from '../models/User.js';
+import { logAction } from '../utils/logger.js';
 
 export const getUsers = async (req: Request, res: Response) => {
   const pageSize = 10;

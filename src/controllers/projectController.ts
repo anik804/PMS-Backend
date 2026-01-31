@@ -1,6 +1,6 @@
 import type { Request, Response } from 'express';
-import Project, { ProjectStatus } from '../models/Project.ts';
-import { logAction } from '../utils/logger.ts';
+import Project, { ProjectStatus } from '../models/Project.js';
+import { logAction } from '../utils/logger.js';
 
 export const createProject = async (req: any, res: Response) => {
   const { name, description } = req.body;

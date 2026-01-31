@@ -1,6 +1,6 @@
 import type { Request, Response } from 'express';
-import Project, { ProjectStatus } from '../models/Project.ts';
-import User from '../models/User.ts';
+import Project, { ProjectStatus } from '../models/Project.js';
+import User from '../models/User.js';
 
 export const getDashboardStats = async (req: Request, res: Response) => {
   try {

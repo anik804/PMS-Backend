@@ -3,10 +3,10 @@ import dotenv from 'dotenv';
 import express, { type NextFunction, type Request, type Response } from 'express';
 import { rateLimit } from 'express-rate-limit';
 import helmet from 'helmet';
-import authRoutes from './routes/authRoutes.ts';
-import dashboardRoutes from './routes/dashboardRoutes.ts';
-import projectRoutes from './routes/projectRoutes.ts';
-import userRoutes from './routes/userRoutes.ts';
+import authRoutes from './routes/authRoutes.js';
+import dashboardRoutes from './routes/dashboardRoutes.js';
+import projectRoutes from './routes/projectRoutes.js';
+import userRoutes from './routes/userRoutes.js';
 
 dotenv.config();
 
@@ -19,21 +19,36 @@ app.use(helmet());
 const allowedOrigins = [
   'http://localhost:5173',
   'http://localhost:3000',
-  process.env.FRONTEND_URL || '',
+  'https://project-management-system-frontend-tau.vercel.app',
 ].filter(Boolean);
+
+// Add FRONTEND_URL origin if provided
+if (process.env.FRONTEND_URL) {
+  try {
+    const origin = new URL(process.env.FRONTEND_URL).origin;
+    if (!allowedOrigins.includes(origin)) {
+      allowedOrigins.push(origin);
+    }
+  } catch (e) {
+    allowedOrigins.push(process.env.FRONTEND_URL);
+  }
+}
 
 app.use(cors({
   origin: (origin, callback) => {
     // Allow requests with no origin (like mobile apps or curl requests)
     if (!origin) return callback(null, true);
 
-    if (allowedOrigins.indexOf(origin) !== -1 || process.env.NODE_ENV === 'development') {
+    if (allowedOrigins.includes(origin) || process.env.NODE_ENV === 'development') {
       callback(null, true);
     } else {
+      console.warn(`CORS blocked for origin: ${origin}`);
       callback(new Error('Not allowed by CORS'));
     }
   },
   credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
 }));
 
 app.use(express.json());
@@ -59,6 +74,15 @@ app.get('/', (req, res) => {
   res.send('API is running...');
 });
 
+// 404 Handler for undefined routes
+app.use((req, res, next) => {
+  res.status(404).json({
+    message: `Not Found - ${req.originalUrl}`,
+    suggestion: "Is the /api prefix missing?",
+  });
+});
+
+// Error Handler
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {
   const statusCode = res.statusCode === 200 ? 500 : res.statusCode;
   res.status(statusCode).json({

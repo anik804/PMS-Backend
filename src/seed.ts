@@ -1,6 +1,6 @@
 import dotenv from 'dotenv';
-import connectDB from './config/db.ts';
-import User, { UserRole, UserStatus } from './models/User.ts';
+import connectDB from './config/db.js';
+import User, { UserRole, UserStatus } from './models/User.js';
 
 dotenv.config();
 

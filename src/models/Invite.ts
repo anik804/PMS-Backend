@@ -1,5 +1,5 @@
 import mongoose, { Schema, type Document } from 'mongoose';
-import { UserRole } from './User.ts';
+import { UserRole } from './User.js';
 
 export interface IInvite extends Document {
   email: string;

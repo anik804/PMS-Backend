@@ -1,5 +1,5 @@
 import type { Types } from 'mongoose';
-import AuditLog from '../models/AuditLog.ts';
+import AuditLog from '../models/AuditLog.js';
 
 export const logAction = async (
   action: string, userId: string | Types.ObjectId, details: any = {},

@@ -1,9 +1,9 @@
 import crypto from 'crypto';
 import type { Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
-import Invite from '../models/Invite.ts';
-import User, { UserRole, UserStatus } from '../models/User.ts';
-import { logAction } from '../utils/logger.ts';
+import Invite from '../models/Invite.js';
+import User, { UserRole, UserStatus } from '../models/User.js';
+import { logAction } from '../utils/logger.js';
 
 const generateToken = (id: string) => {
   return jwt.sign({ id }, process.env.JWT_SECRET || 'supersecretkey', {

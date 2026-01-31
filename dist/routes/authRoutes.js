@@ -1,12 +1,10 @@
 import express from 'express';
-import { inviteUser, login, registerViaInvite, validateInvite } from '../controllers/authController.js';
-import { authorize, protect } from '../middlewares/auth.js';
-import { UserRole } from '../models/User.js';
-
+import { inviteUser, login, registerViaInvite, validateInvite } from '../controllers/authController';
+import { authorize, protect } from '../middlewares/auth';
+import { UserRole } from '../models/User';
 const router = express.Router();
 router.post('/login', login);
 router.post('/invite', protect, authorize(UserRole.ADMIN), inviteUser);
 router.post('/register-via-invite', registerViaInvite);
 router.get('/validate-invite/:token', validateInvite);
-
 export default router;
