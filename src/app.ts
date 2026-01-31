@@ -20,35 +20,27 @@ const allowedOrigins = [
   'http://localhost:5173',
   'http://localhost:3000',
   'https://project-management-system-frontend-tau.vercel.app',
+  'https://project-management-system-frontend-anik804-anik804s-projects.vercel.app',
 ].filter(Boolean);
-
-// Add FRONTEND_URL origin if provided
-if (process.env.FRONTEND_URL) {
-  try {
-    const origin = new URL(process.env.FRONTEND_URL).origin;
-    if (!allowedOrigins.includes(origin)) {
-      allowedOrigins.push(origin);
-    }
-  } catch (e) {
-    allowedOrigins.push(process.env.FRONTEND_URL);
-  }
-}
 
 app.use(cors({
   origin: (origin, callback) => {
     // Allow requests with no origin (like mobile apps or curl requests)
     if (!origin) return callback(null, true);
 
-    if (allowedOrigins.includes(origin) || process.env.NODE_ENV === 'development') {
+    const isVercel = origin.endsWith('.vercel.app');
+    const isAllowed = allowedOrigins.includes(origin);
+
+    if (isAllowed || isVercel || process.env.NODE_ENV === 'development') {
       callback(null, true);
     } else {
-      console.warn(`CORS blocked for origin: ${origin}`);
+      console.error(`CORS Blocked: ${origin}`);
       callback(new Error('Not allowed by CORS'));
     }
   },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
 }));
 
 app.use(express.json());
